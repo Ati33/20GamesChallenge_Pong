@@ -1,0 +1,99 @@
+[gd_scene load_steps=10 format=3 uid="uid://tndkviucgavt"]
+
+[ext_resource type="Script" path="res://Scripts/Arena.gd" id="1_a6ly3"]
+[ext_resource type="PackedScene" uid="uid://cd17shdp2g2c" path="res://Scenes/OpponentPaddle.tscn" id="2_31260"]
+[ext_resource type="Script" path="res://Scripts/PlayerPaddle.gd" id="2_at8vb"]
+[ext_resource type="PackedScene" uid="uid://cvafg36b0pchc" path="res://Scenes/ball.tscn" id="3_gombc"]
+[ext_resource type="Script" path="res://Scripts/ScoreArea.gd" id="5_2tsey"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_viuwh"]
+size = Vector2(105, 3)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oephu"]
+size = Vector2(1, 4)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6uxsr"]
+size = Vector2(1, 4)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_axoua"]
+size = Vector2(5, 54)
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_a6ly3")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(48, 28)
+zoom = Vector2(12, 12)
+
+[node name="CeilingAndFloor" type="StaticBody2D" parent="."]
+position = Vector2(49, -1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CeilingAndFloor"]
+shape = SubResource("RectangleShape2D_viuwh")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="CeilingAndFloor"]
+position = Vector2(-1.405, 56)
+shape = SubResource("RectangleShape2D_viuwh")
+
+[node name="Player" type="StaticBody2D" parent="."]
+position = Vector2(90, 28)
+script = ExtResource("2_at8vb")
+
+[node name="ColorRect" type="ColorRect" parent="Player"]
+offset_top = -3.0
+offset_right = 1.0
+offset_bottom = 1.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+position = Vector2(0.5, -1)
+shape = SubResource("RectangleShape2D_oephu")
+
+[node name="Area2D" type="Area2D" parent="Player"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/Area2D"]
+position = Vector2(0.5, -1)
+shape = SubResource("RectangleShape2D_6uxsr")
+
+[node name="Opponent" parent="." instance=ExtResource("2_31260")]
+position = Vector2(5, 28)
+
+[node name="Ball" parent="." instance=ExtResource("3_gombc")]
+position = Vector2(48, -6)
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+autostart = true
+
+[node name="PlayerSideScoreArea" type="Area2D" parent="."]
+script = ExtResource("5_2tsey")
+
+[node name="PlayerSide" type="CollisionShape2D" parent="PlayerSideScoreArea"]
+position = Vector2(98, 27)
+shape = SubResource("RectangleShape2D_axoua")
+
+[node name="OppSideScoreArea" type="Area2D" parent="."]
+script = ExtResource("5_2tsey")
+
+[node name="OppSide" type="CollisionShape2D" parent="OppSideScoreArea"]
+position = Vector2(-2, 27)
+shape = SubResource("RectangleShape2D_axoua")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="OppSideScoreArea"]
+
+[node name="OppScore" type="Label" parent="OppSideScoreArea/CanvasLayer"]
+offset_left = 284.0
+offset_right = 324.0
+offset_bottom = 45.0
+theme_override_font_sizes/font_size = 32
+text = "0
+"
+
+[node name="PlayerScore" type="Label" parent="OppSideScoreArea/CanvasLayer"]
+offset_left = 868.0
+offset_right = 908.0
+offset_bottom = 45.0
+theme_override_font_sizes/font_size = 32
+text = "0
+"
+
+[connection signal="timeout" from="Timer" to="Ball" method="_on_timer_timeout"]
